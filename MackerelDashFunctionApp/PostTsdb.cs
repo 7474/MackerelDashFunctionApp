@@ -39,7 +39,7 @@ namespace MackerelDashFunctionApp
                     value = metric.value,
                 });
             }
-            return req.CreateResponse(HttpStatusCode.Created);
+            return req.CreateResponse(HttpStatusCode.OK);
         }
 
         public class HostMetric : TableEntity
