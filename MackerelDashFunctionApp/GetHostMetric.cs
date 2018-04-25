@@ -27,7 +27,6 @@ namespace MackerelDashFunctionApp
                 .Where(x => x.RowKey.CompareTo(from) >= 0)
                 .Where(x => x.RowKey.CompareTo(to) < 0)
                 .Where(x => x.name == name)
-                .OrderBy(x => x.RowKey)
                 ;
             return req.CreateResponse(HttpStatusCode.OK, new
             {
