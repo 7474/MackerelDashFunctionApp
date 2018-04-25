@@ -32,8 +32,7 @@ namespace MackerelDashFunctionApp
                 var hostMetric = new HostMetric()
                 {
                     PartitionKey = metric.hostId,
-                    RowKey = metric.name + "+" + metric.time,
-                    Timestamp = DateTimeOffset.FromUnixTimeSeconds(long.Parse(metric.time.ToString())),
+                    RowKey = metric.time + "+" + metric.name,
                     hostId = metric.hostId,
                     name = metric.name,
                     time = metric.time,
