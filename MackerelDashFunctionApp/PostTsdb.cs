@@ -7,6 +7,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.WindowsAzure.Storage.Table;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace MackerelDashFunctionApp
 {
@@ -14,7 +15,7 @@ namespace MackerelDashFunctionApp
     {
         [FunctionName("PostTsdb")]
         public static async Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Admin, "post", Route = "tsdb")]HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "tsdb")]HttpRequestMessage req,
             [Table("hostmetrics", Connection = "StorageConnectionString")]ICollector<HostMetric> outTable,
             TraceWriter log)
         {
@@ -28,16 +29,19 @@ namespace MackerelDashFunctionApp
 
             foreach (var metric in metrics)
             {
-                outTable.Add(new HostMetric()
+                var hostMetric = new HostMetric()
                 {
-                    // XXX Key—v‘f2‚Â‚¾‚Æ‚¢‚¢Š´‚¶‚É‚È‚ç‚È‚¢
-                    PartitionKey = metric.name + "-" + metric.hostId,
-                    RowKey = metric.time,
+                    PartitionKey = metric.hostId,
+                    RowKey = metric.name + "+" + metric.time,
+                    Timestamp = DateTimeOffset.FromUnixTimeSeconds(long.Parse(metric.time.ToString())),
                     hostId = metric.hostId,
                     name = metric.name,
                     time = metric.time,
                     value = metric.value,
-                });
+                };
+                log.Verbose(JsonConvert.SerializeObject(metric));
+                log.Verbose(JsonConvert.SerializeObject(hostMetric));
+                outTable.Add(hostMetric);
             }
             return req.CreateResponse(HttpStatusCode.OK);
         }
@@ -46,8 +50,8 @@ namespace MackerelDashFunctionApp
         {
             public string hostId { get; set; }
             public string name { get; set; }
-            public ulong time { get; set; }
-            public decimal value { get; set; }
+            public long time { get; set; }
+            public double value { get; set; }
         }
     }
 }

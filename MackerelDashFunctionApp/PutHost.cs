@@ -13,7 +13,7 @@ namespace MackerelDashFunctionApp
     {
         [FunctionName("PutHost")]
         public static HttpResponseMessage Run(
-            [HttpTrigger(AuthorizationLevel.Admin, "put", Route = "hosts/{hostId}")]Host host,
+            [HttpTrigger(AuthorizationLevel.Function, "put", Route = "hosts/{hostId}")]Host host,
             [Table("hosts", Connection = "StorageConnectionString")]CloudTable outTable,
             TraceWriter log)
         {

@@ -12,7 +12,7 @@ namespace MackerelDashFunctionApp
     {
         [FunctionName("GetHost")]
         public static HttpResponseMessage Run(
-            [HttpTrigger(AuthorizationLevel.Admin, "get", Route = "hosts/{hostId}")]HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "hosts/{hostId}")]HttpRequestMessage req,
             string hostId,
             TraceWriter log)
         {
